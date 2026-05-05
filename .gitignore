@@ -1,1 +1,7 @@
 .runtime/
+
+# Claude Code per-user local settings (allowlist auto-appended at runtime)
+.claude/
+
+# Myco agent runtime state (canon: .myco_state/ is gitignored)
+.myco_state/
