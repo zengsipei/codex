@@ -1,0 +1,106 @@
+# _canon.yaml — authored by `myco germinate` on 2026-04-30T15:43:48Z
+# Schema: docs/architecture/L1_CONTRACT/canon_schema.md
+schema_version: "1"
+contract_version: "v0.7.2"
+# v0.5.8: germinate stamps synced_contract_version in lockstep with
+# contract_version so a fresh substrate starts in a synced state.
+# Drift detection in hunger + the DC3 migration dimension (v0.5.8)
+# compare canon.contract_version vs synced_contract_version; missing
+# synced = permanent no-drift which hides every future upgrade need.
+synced_contract_version: "v0.7.2"
+identity:
+  substrate_id: "ask_codex_skill"
+  tags: []
+  entry_point: "MYCO.md"
+
+system:
+  write_surface:
+    allowed:
+      - "_canon.yaml"
+      - "MYCO.md"
+      - "notes/**"
+      - "docs/**"
+      - "src/**"
+      # v0.5.8: ``.myco/**`` is required for substrate-local
+      # extensibility (``myco ramify --substrate-local`` writes here,
+      # and every substrate-local plugin lives under
+      # ``.myco/plugins/**``). Fresh substrates that expect to host
+      # local extensions or overlay verbs need this pattern covered.
+      - ".myco/**"
+      # v0.5.24: ``.myco_state/**`` covers the substrate's runtime
+      # state directory — reflex ledger, pulse cache, session
+      # markers, and the ``excreted/`` tombstone directory where
+      # ``myco excrete`` moves raw notes that should never have been
+      # captured (typo / accidental ingest / duplicate). Without
+      # this pattern, ``myco_excrete`` fails on a fresh substrate
+      # with a WriteSurfaceViolation for the tombstone. ``.myco_state/``
+      # itself is gitignored — this pattern only authorises writes
+      # from within Myco's write-surface guard, it does NOT publish
+      # the directory to version control.
+      - ".myco_state/**"
+      # Allow GitHub Actions workflow files to live under .github/.
+      # Required for the sync-fork workflow that mirrors upstream
+      # commits into this fork's default branch every 6 hours.
+      - ".github/**"
+  hard_contract:
+    # v0.5.10: ``rules_ref`` is no longer stamped by default. It
+    # pointed at ``docs/architecture/L1_CONTRACT/protocol.md`` which
+    # doesn't exist in a fresh substrate, causing SE1 MEDIUM dangling
+    # findings on every freshly-germinated substrate right after
+    # ``myco germinate``. Operators who mirror the Myco-self doctrine
+    # tree add ``rules_ref`` back once that file is materialized.
+    rule_count: 7
+  # v0.5.6 (L0 principle 1 enforcement): declares whether this
+  # substrate opts out of the "Agent calls LLM, substrate does
+  # not" invariant. Default true. MP1 dimension cross-checks
+  # against kernel scans.
+  no_llm_in_substrate: true
+
+# v0.5.10: ``versioning`` block removed from the default template.
+# It only makes sense for substrates that carry a Python package at
+# ``src/myco/__init__.py`` (Myco-self, kernel-like substrates). A
+# fresh non-kernel substrate has no such file, so SH1 would fire
+# MEDIUM on every germinate. Kernel-like substrates add the block
+# back when they grow code.
+
+lint:
+  categories:
+    - mechanical
+    - shipped
+    - metabolic
+    - semantic
+  exit_policy:
+    default: "mechanical:critical,shipped:critical,metabolic:never,semantic:never"
+  skeleton_downgrade:
+    marker: ".myco_state/autoseeded.txt"
+    # v0.5.10: ``affected_dimensions`` is empty. Pre-v0.5 the list
+    # held ``L0`` but that dim was retired at Stage B.8; no dim
+    # currently earns skeleton grace. Retained as an explicit seam
+    # for future dimensions that need fresh-substrate downgrade.
+    affected_dimensions: []
+
+subsystems:
+  # v0.5.10: default template omits ``doc:`` sub-keys. They stamped
+  # paths at ``docs/architecture/L2_DOCTRINE/*.md`` which don't exist
+  # in a fresh substrate, producing spurious SE1 findings on every
+  # new substrate right after ``myco germinate``. Operators who mirror
+  # the Myco-self doctrine tree add ``doc:`` back once those files
+  # are materialized. Subsystem NAMES remain canonically declared
+  # (MF1 cross-checks present subsystems against the kernel's list)
+  # but the per-subsystem pointers are optional.
+  germination: {}
+  ingestion: {}
+  digestion: {}
+  circulation: {}
+  homeostasis: {}
+
+# v0.5.10: ``commands.manifest_ref`` removed. Pointed at
+# ``src/myco/surface/manifest.yaml`` which only exists in Myco-self.
+# Kernel-like substrates add it back.
+
+waves:
+  current: 2
+  # v0.5.10: ``log_ref`` removed. The contract_changelog.md is a
+  # kernel convention; fresh substrates don't ship one. ``myco molt``
+  # auto-creates it on first bump; operators may add the ref back
+  # to canon once the file exists.

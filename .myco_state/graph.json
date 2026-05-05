@@ -1,0 +1,13 @@
+{
+  "schema": "1",
+  "generated_at": "2026-05-05T07:30:05Z",
+  "canon_fingerprint": "c6735294775e0d3f352bd6b2a9fad2562929f4725811208c127741165481a6f8",
+  "nodes": [
+    "MYCO.md",
+    "_canon.yaml",
+    "docs/contract_changelog.md",
+    "notes/integrated/n_20260502T120508Z_powershell-stdin.md",
+    "notes/integrated/n_20260502T120521Z.md"
+  ],
+  "edges": []
+}

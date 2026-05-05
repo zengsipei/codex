@@ -1,0 +1,45 @@
+name: Sync fork with upstream
+
+on:
+  schedule:
+    # Every 6 hours. Minute 17 avoids the on-the-hour cron stampede
+    # on GitHub's shared runners (everyone uses 0 */6 * * *).
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+# Don't let two sync runs race each other.
+concurrency:
+  group: sync-fork
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync main from upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # Resolve the upstream fork parent through the GitHub API.
+          # If this repo isn't a fork there is nothing to sync — fail loud.
+          UPSTREAM=$(gh api "repos/$REPO" --jq '.parent.full_name // empty')
+          if [ -z "$UPSTREAM" ]; then
+            echo "::error::$REPO is not a fork — nothing to sync."
+            exit 1
+          fi
+          echo "Upstream detected: $UPSTREAM"
+          echo "Syncing $REPO:main from $UPSTREAM..."
+
+          # gh repo sync wraps POST /repos/{owner}/{repo}/merge-upstream.
+          # Behaviour:
+          #   * fast-forward → branch advanced, exit 0
+          #   * none         → already up to date, exit 0
+          #   * conflict     → exit non-zero so this workflow fails and
+          #                    you get an email / red x to investigate.
+          gh repo sync "$REPO" --branch main

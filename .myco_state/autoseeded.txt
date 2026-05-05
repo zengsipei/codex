@@ -1,0 +1,2 @@
+autoseeded by myco germinate at 2026-04-30T15:43:48Z
+substrate_id=ask_codex_skill

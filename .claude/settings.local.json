@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__myco__myco_germinate",
+      "mcp__plugin_myco_myco__myco_hunger",
+      "Bash(ConvertFrom-Json)",
+      "Bash(ConvertTo-Json -Depth 10)",
+      "PowerShell(Get-Content *)",
+      "mcp__plugin_myco_myco__myco_eat",
+      "Skill(myco:session-end)",
+      "mcp__plugin_myco_myco__myco_sense",
+      "mcp__plugin_myco_myco__myco_excrete",
+      "mcp__plugin_myco_myco__myco_immune",
+      "Bash(git add *)"
+    ]
+  }
+}
